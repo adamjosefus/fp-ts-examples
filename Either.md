@@ -4,6 +4,7 @@
   - [Destructors](#destructors)
     - [`fold`](#fold)
     - [`foldW`](#foldw)
+    - [`getOrElse`](#getorelse)
 
 ## Destructors
 
@@ -97,4 +98,47 @@ pipe(
         right => `Right: ${right}`,
     )
 ) // null
+```
+
+
+### `getOrElse`
+
+Method `getOrElse` destruct `Either<B, A>` to `A`.
+
+Type of output value must be same as value of `Right`.
+
+```mermaid
+flowchart LR
+    input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
+    input --> right[Right<<span>A</span>>]
+        right --> result([<span>C</span>])
+        left --> | getOrElse | resultLeft([<span>A</span>])
+            resultLeft --> result(<span>A</span>)
+
+```
+
+
+```ts
+import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+
+function value(toggle: boolean): E.Either<"error", number> {
+    return toggle
+        ? E.right(123)
+        : E.left("error")
+}
+
+pipe(
+    value(false),
+    E.getOrElse(
+        err => -1
+    ),
+) // 123
+
+pipe(
+    value(false),
+    E.getOrElse(
+        err => -1
+    )
+) // -1
 ```
