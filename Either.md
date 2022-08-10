@@ -13,12 +13,14 @@
 
 Method `fold` destruct `Either<B, A>` to `C`.
 
+Type of output value can be different from `Left` and `Right`.
+
 ```mermaid
 flowchart LR
-input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
-input --> right[Right<<span>A</span>>]
-right --> result([C])
-left --> result([C])
+    input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
+    input --> right[Right<<span>A</span>>]
+    right --> | fold | result([C])
+    left  --> | fold | result(C)
 
 ```
 
@@ -54,16 +56,18 @@ pipe(
 ### `foldW`
 *Alias for [`matchW`](#matchW).*
 
-Method `fold` destruct `Either<B, A>` to `C|D`.
+Method `foldW` destruct `Either<B, A>` to `C|D`. Less strict version of [`fold`](#fold).
+
+Type of output value can be different from `Left` and `Right`.
 
 ```mermaid
 flowchart LR
 input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
-input --> right[Right<<span>A</span>>]
-right --> resultRight([<span>C</span>])
-left --> resultLeft([<span>D</span>])
-resultRight --> result([<span>C or D</span>])
-resultLeft --> result([<span>C or D</span>])
+    input --> right[Right<<span>A</span>>]
+        right --> | foldW | resultRight([<span>C</span>])
+        left -->  | foldW | resultLeft([<span>D</span>])
+            resultRight --> result(<span>C or D</span>)
+            resultLeft --> result(<span>C or D</span>)
 
 ```
 
