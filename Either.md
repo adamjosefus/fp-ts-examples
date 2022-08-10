@@ -105,15 +105,15 @@ pipe(
 
 Method `getOrElse` destruct `Either<B, A>` to `A`.
 
-Type of output value must be same as value of `Right`.
+Type of output value must be same as type of `Right` value.
 
 ```mermaid
 flowchart LR
     input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
     input --> right[Right<<span>A</span>>]
-        right --> result([<span>C</span>])
-        left --> | getOrElse | resultLeft([<span>A</span>])
-            resultLeft --> result(<span>A</span>)
+    right --> result([<span>C</span>])
+    left --> | getOrElse | resultLeft([<span>A</span>])
+    resultLeft --> result(<span>A</span>)
 
 ```
 
