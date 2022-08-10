@@ -10,8 +10,8 @@ function value(toggle: boolean): E.Either<"error", number> {
 console.log(
     pipe(
         value(true),
-        E.fold(
-            left => `Left: ${left}`,
+        E.foldW(
+            left => null,
             right => `Right: ${right}`,
         )
     )
@@ -20,8 +20,8 @@ console.log(
 console.log(
     pipe(
         value(false),
-        E.fold(
-            left => `Left: ${left}`,
+        E.foldW(
+            left => null,
             right => `Right: ${right}`,
         )
     )
