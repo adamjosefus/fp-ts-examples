@@ -1,16 +1,95 @@
 # `Either`
 
 - [`Either`](#either)
-  - [Destructors](#destructors)
-    - [`fold`](#fold)
-    - [`foldW`](#foldw)
+  - [constructors](#constructors)
+    - [`fromPredicate`](#frompredicate)
+    - [`left`](#left)
+    - [`right`](#right)
+  - [destructors](#destructors)
+    - [`fold` / `match`](#fold--match)
+    - [`foldW` / `matchW`](#foldw--matchw)
     - [`getOrElse`](#getorelse)
     - [`getOrElseW`](#getorelsew)
 
-## Destructors
+
+---
 
 
-### `fold`
+## constructors
+Creates `Either` from value.
+
+
+### `fromPredicate`
+
+
+```mermaid
+flowchart LR
+    input("A") --> | fromPredicate | method{"predicate"}
+    method --> | true | output("Either<<span>B, A</span>>")
+    method --> | false | onFalse([B])
+    onFalse --> output
+
+
+```
+
+
+```ts
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
+
+type A = number
+type B = "error"
+
+const v: E.Either<B, A> = pipe(
+    123,
+    E.fromPredicate(
+        (n): boolean => n > 0,
+        (n): A => "error"
+    )
+)
+```
+
+
+### `left`
+
+```mermaid
+flowchart LR
+    input("A") --> | left | output("Either<<span>A, never</span>>")
+```
+
+```ts
+import * as E from "fp-ts/lib/Either"
+
+type A = "error"
+
+const v: E.Either<A, never> = E.left("error")
+```
+
+
+### `right`
+
+```mermaid
+flowchart LR
+    input("A") --> | right | output("Either<<span>never, A</span>>")
+```
+
+```ts
+import * as E from "fp-ts/lib/Either"
+
+type A = number
+
+const v: E.Either<never, A> = E.right(123)
+```
+
+
+---
+
+
+## destructors
+Gets value from `Either`.
+
+
+### `fold` / `match`
 *Alias for [`match`](#match).*
 
 Method `fold` destruct `Either<B, A>` to `C`.
@@ -59,7 +138,7 @@ const v2: C = pipe(
 ```
 
 
-### `foldW`
+### `foldW` / `matchW`
 *Alias for [`matchW`](#matchW).*
 
 Method `foldW` destruct `Either<B, A>` to `C | D`. Less strict version of [`fold`](#fold).
