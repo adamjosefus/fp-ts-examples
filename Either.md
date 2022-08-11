@@ -1,25 +1,31 @@
 # `Either`
 
-- [`Either`](#either)
-  - [constructors](#constructors)
-    - [`fromPredicate`](#frompredicate)
-    - [`left`](#left)
-    - [`right`](#right)
-  - [destructors](#destructors)
-    - [`fold` / `match`](#fold--match)
-    - [`foldW` / `matchW`](#foldw--matchw)
-    - [`getOrElse`](#getorelse)
-    - [`getOrElseW`](#getorelsew)
+- [constructors](#constructors)
+  - [`fromPredicate`](#frompredicate)
+  - [`left`](#left)
+  - [`right`](#right)
+- [destructors](#destructors)
+  - [`fold` / `match`](#fold--match)
+  - [`foldW` / `matchW`](#foldw--matchw)
+  - [`getOrElse`](#getorelse)
+  - [`getOrElseW`](#getorelsew)
 
+
+<!-- ---
+
+
+# combinators
+
+## `apFirst` -->
 
 ---
 
 
-## constructors
+# constructors
 Creates `Either` from value.
 
 
-### `fromPredicate`
+## `fromPredicate`
 
 
 ```mermaid
@@ -50,7 +56,7 @@ const v: E.Either<B, A> = pipe(
 ```
 
 
-### `left`
+## `left`
 
 ```mermaid
 flowchart LR
@@ -66,7 +72,7 @@ const v: E.Either<A, never> = E.left("error")
 ```
 
 
-### `right`
+## `right`
 
 ```mermaid
 flowchart LR
@@ -85,11 +91,11 @@ const v: E.Either<never, A> = E.right(123)
 ---
 
 
-## destructors
+# destructors
 Gets value from `Either`.
 
 
-### `fold` / `match`
+## `fold` / `match`
 *Alias for [`match`](#match).*
 
 Method `fold` destruct `Either<B, A>` to `C`.
@@ -138,7 +144,7 @@ const v2: C = pipe(
 ```
 
 
-### `foldW` / `matchW`
+## `foldW` / `matchW`
 *Alias for [`matchW`](#matchW).*
 
 Method `foldW` destruct `Either<B, A>` to `C | D`. Less strict version of [`fold`](#fold).
@@ -190,7 +196,7 @@ const v2: C | D = pipe(
 ```
 
 
-### `getOrElse`
+## `getOrElse`
 
 Method `getOrElse` destruct `Either<B, A>` to `A`.
 
@@ -236,7 +242,7 @@ const v2: A = pipe(
 ```
 
 
-### `getOrElseW`
+## `getOrElseW`
 
 Method `getOrElseW` destruct `Either<B, A>` to `A | C`. Less strict version of [`getOrElse`](#getOrElse).
 
