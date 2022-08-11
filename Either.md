@@ -1,4 +1,4 @@
-# `Either`
+<h1><code>Either</code></h1>
 
 - [constructors](#constructors)
   - [`fromPredicate`](#frompredicate)
