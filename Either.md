@@ -5,6 +5,7 @@
     - [`fold`](#fold)
     - [`foldW`](#foldw)
     - [`getOrElse`](#getorelse)
+    - [`getOrElseW`](#getorelsew)
 
 ## Destructors
 
@@ -30,13 +31,17 @@ flowchart LR
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 
-function value(toggle: boolean): E.Either<"error", number> {
+type A = number;
+type B = "error";
+type C = string;
+
+function value(toggle: boolean): E.Either<B, A> {
     return toggle
         ? E.right(123)
         : E.left("error")
 }
 
-pipe(
+const v1: C = pipe(
     value(true),
     E.fold(
         left => `Left: ${left}`,
@@ -44,7 +49,7 @@ pipe(
     )
 ) // "Right 123"
 
-pipe(
+const v2: C = pipe(
     value(false),
     E.fold(
         left => `Left: ${left}`,
@@ -77,13 +82,18 @@ input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 
-function value(toggle: boolean): E.Either<"error", number> {
+type A = number;
+type B = "error";
+type C = string;
+type D = null;
+
+function value(toggle: boolean): E.Either<B, A> {
     return toggle
         ? E.right(123)
         : E.left("error")
 }
 
-pipe(
+const v1: C | D = pipe(
     value(true),
     E.foldW(
         left => null,
@@ -91,7 +101,7 @@ pipe(
     )
 ) // "Right 123"
 
-pipe(
+const v2: C | D = pipe(
     value(false),
     E.foldW(
         left => null,
@@ -122,23 +132,73 @@ flowchart LR
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 
-function value(toggle: boolean): E.Either<"error", number> {
+type A = number;
+type B = "error";
+
+function value(toggle: boolean): E.Either<B, A> {
     return toggle
         ? E.right(123)
         : E.left("error")
 }
 
-pipe(
-    value(false),
+const v1: A = pipe(
+    value(true),
     E.getOrElse(
         err => -1
     ),
 ) // 123
 
-pipe(
+const v2: A = pipe(
     value(false),
     E.getOrElse(
         err => -1
     )
 ) // -1
+```
+
+
+### `getOrElseW`
+
+Method `getOrElseW` destruct `Either<B, A>` to `A|C`. Less strict version of [`getOrElse`](#getOrElse).
+
+Type of output value can be different from type of `Right` value.
+
+```mermaid
+flowchart LR
+    input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
+    input --> right[Right<<span>A</span>>]
+    right --> result([<span>C</span>])
+    left --> | getOrElseW | resultLeft([<span>C</span>])
+    resultLeft --> result(<span>A or C</span>)
+
+```
+
+
+```ts
+import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+
+type A = number;
+type B = "error";
+type C = string;
+
+function value(toggle: boolean): E.Either<B, A> {
+    return toggle
+        ? E.right(123)
+        : E.left("error")
+}
+
+const v1: A | C = pipe(
+    value(true),
+    E.getOrElseW(
+        err => `My stirng: ${err}`
+    ),
+) // 123
+
+const v2: A | C = pipe(
+    value(false),
+    E.getOrElseW(
+        err => `My stirng: ${err}`
+    ),
+) // "My stirng: error"
 ```
