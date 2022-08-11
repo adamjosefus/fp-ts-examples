@@ -28,11 +28,11 @@ flowchart LR
 
 
 ```ts
-import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
 
 type A = number;
-type B = "error";
+type B = "error"
 type C = string;
 
 function value(toggle: boolean): E.Either<B, A> {
@@ -79,11 +79,11 @@ input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
 
 
 ```ts
-import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
 
 type A = number;
-type B = "error";
+type B = "error"
 type C = string;
 type D = null;
 
@@ -129,11 +129,11 @@ flowchart LR
 
 
 ```ts
-import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
 
 type A = number;
-type B = "error";
+type B = "error"
 
 function value(toggle: boolean): E.Either<B, A> {
     return toggle
@@ -175,11 +175,11 @@ flowchart LR
 
 
 ```ts
-import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
 
 type A = number;
-type B = "error";
+type B = "error"
 type C = string;
 
 function value(toggle: boolean): E.Either<B, A> {
