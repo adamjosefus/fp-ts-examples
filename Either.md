@@ -62,7 +62,7 @@ const v2: C = pipe(
 ### `foldW`
 *Alias for [`matchW`](#matchW).*
 
-Method `foldW` destruct `Either<B, A>` to `C|D`. Less strict version of [`fold`](#fold).
+Method `foldW` destruct `Either<B, A>` to `C | D`. Less strict version of [`fold`](#fold).
 
 Type of output value can be different from `Left` and `Right`.
 
@@ -159,7 +159,7 @@ const v2: A = pipe(
 
 ### `getOrElseW`
 
-Method `getOrElseW` destruct `Either<B, A>` to `A|C`. Less strict version of [`getOrElse`](#getOrElse).
+Method `getOrElseW` destruct `Either<B, A>` to `A | C`. Less strict version of [`getOrElse`](#getOrElse).
 
 Type of output value can be different from type of `Right` value.
 
