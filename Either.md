@@ -116,9 +116,9 @@ flowchart LR
 import * as E from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
-type A = number;
+type A = number
 type B = "error"
-type C = string;
+type C = string
 
 function value(toggle: boolean): E.Either<B, A> {
     return toggle
@@ -167,10 +167,10 @@ input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
 import * as E from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
-type A = number;
+type A = number
 type B = "error"
-type C = string;
-type D = null;
+type C = string
+type D = null
 
 function value(toggle: boolean): E.Either<B, A> {
     return toggle
@@ -217,7 +217,7 @@ flowchart LR
 import * as E from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
-type A = number;
+type A = number
 type B = "error"
 
 function value(toggle: boolean): E.Either<B, A> {
@@ -263,9 +263,9 @@ flowchart LR
 import * as E from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
-type A = number;
+type A = number
 type B = "error"
-type C = string;
+type C = string
 
 function value(toggle: boolean): E.Either<B, A> {
     return toggle
