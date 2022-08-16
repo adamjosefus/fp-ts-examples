@@ -1,5 +1,7 @@
 <h1><code>Either</code></h1>
 
+- [combinators](#combinators)
+  - [`apFirst`](#apfirst)
 - [constructors](#constructors)
   - [`fromPredicate`](#frompredicate)
   - [`left`](#left)
@@ -11,12 +13,82 @@
   - [`getOrElseW`](#getorelsew)
 
 
-<!-- ---
+---
 
 
 # combinators
 
-## `apFirst` -->
+## `apFirst`
+Combine two effectful actions, keeping only the result of the first.
+
+
+```mermaid
+flowchart LR
+    style apFirst stroke-width: 2px
+
+    input( Either<<span>B, A</span>> )
+    apFirst{ <b>apFirst</b> }
+    second{{ second }}
+    outputRight("Either<<span>never, A</span>>")
+    outputLeft("Either<<span>B, never</span>>")
+
+    input --> apFirst
+    apFirst --> | right | second
+    apFirst --> | left | outputLeft
+    second --> | right | outputRight
+    second --> | left | outputLeft
+```
+
+
+```ts
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
+
+type A = number
+type B = "error"
+type C = unknown
+
+function value(toggle: boolean): E.Either<B, A> {
+    return toggle
+        ? E.right(123)
+        : E.left("error")
+}
+
+function anotherValue(toggle: boolean): E.Either<B, C> {
+    return toggle
+        ? E.right("abc")
+        : E.left("error")
+}
+
+const v1: E.Either<B, A> = pipe(
+    value(true),
+    E.apFirst(
+        anotherValue(true)
+    )
+) // { _tag: 'Right', right: 123 }
+
+const v2: E.Either<B, A> = pipe(
+    value(true),
+    E.apFirst(
+        anotherValue(true)
+    )
+) // { _tag: 'Left', left: 'error' }
+
+const v3: E.Either<B, A> = pipe(
+    value(false),
+    E.apFirst(
+        anotherValue(true)
+    )
+) // { _tag: 'Left', left: 'error' }
+
+const v4: E.Either<B, A> = pipe(
+    value(false),
+    E.apFirst(
+        anotherValue(false)
+    )
+) // { _tag: 'Left', left: 'error' }
+```
+
 
 ---
 
@@ -27,15 +99,24 @@ Creates `Either` from value.
 
 ## `fromPredicate`
 
-
 ```mermaid
 flowchart LR
-    input("A") --> | fromPredicate | method{"predicate"}
-    method --> | true | output("Either<<span>B, A</span>>")
-    method --> | false | onFalse([B])
-    onFalse --> output
+    style fromPredicate stroke-width: 2px
 
+    input( A )
+    fromPredicate{ <b>fromPredicate</b> }
+    predicate{{ predicate }}
+    onFalse{{ onFalse }}
+    leftValue( B )
+    output( Either<<span>B, A</span>> )
 
+    input --> fromPredicate
+    fromPredicate --> predicate
+    predicate --> | true | output
+    predicate --> | false | onFalse
+    onFalse --> leftValue
+    leftValue --> output
+    
 ```
 
 
@@ -50,7 +131,7 @@ const v: E.Either<B, A> = pipe(
     123,
     E.fromPredicate(
         (n): boolean => n > 0,
-        (n): A => "error"
+        (n): B => "error"
     )
 )
 ```
@@ -60,15 +141,22 @@ const v: E.Either<B, A> = pipe(
 
 ```mermaid
 flowchart LR
-    input("A") --> | left | output("Either<<span>A, never</span>>")
+    style left stroke-width: 2px
+
+    input("B")
+    left{ <b>left<b> }
+    output( Either<<span>B, never</span>> )
+
+    input --> left
+    left --> output
 ```
 
 ```ts
 import * as E from "fp-ts/lib/Either"
 
-type A = "error"
+type B = "error"
 
-const v: E.Either<A, never> = E.left("error")
+const v: E.Either<B, never> = E.left("error")
 ```
 
 
@@ -76,7 +164,14 @@ const v: E.Either<A, never> = E.left("error")
 
 ```mermaid
 flowchart LR
-    input("A") --> | right | output("Either<<span>never, A</span>>")
+    style right stroke-width: 2px
+
+    input("A")
+    right{ <b>right<b> }
+    output( Either<<span>never, A</span>> )
+
+    input --> right
+    right --> output
 ```
 
 ```ts
@@ -104,10 +199,16 @@ Type of output value can be different from `Left` and `Right`.
 
 ```mermaid
 flowchart LR
-    input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
-    input --> right[Right<<span>A</span>>]
-    right --> | fold | result([C])
-    left  --> | fold | result(C)
+    input("Either<<span>B, A</span>>")
+    input --> method
+    method{fold}
+    method --> | onLeft | resultLeft
+    method --> | onRight | resultRight
+    resultLeft([C])
+    resultRight([C])
+    resultLeft --> result
+    resultRight --> result
+    result(C)
 
 ```
 
