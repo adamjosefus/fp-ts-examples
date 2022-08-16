@@ -7,8 +7,8 @@
   - [`left`](#left)
   - [`right`](#right)
 - [destructors](#destructors)
-  - [`fold` / `match`](#fold--match)
-  - [`foldW` / `matchW`](#foldw--matchw)
+  - [`match` / `fold`](#match--fold)
+  - [`matchW` / `foldW`](#matchw--foldw)
   - [`getOrElse`](#getorelse)
   - [`getOrElseW`](#getorelsew)
 
@@ -19,7 +19,7 @@
 # combinators
 
 ## `apFirst`
-Combine two effectful actions, keeping only the result of the first.
+Combine two effectfull actions, keeping only the result of the first.
 
 
 ```mermaid
@@ -106,7 +106,7 @@ flowchart LR
     input( A )
     fromPredicate{ <b>fromPredicate</b> }
     predicate{{ predicate }}
-    onFalse{{ onFalse }}
+    onFalse([ onFalse ])
     leftValue( B )
     output( Either<<span>B, A</span>> )
 
@@ -190,28 +190,32 @@ const v: E.Either<never, A> = E.right(123)
 Gets value from `Either`.
 
 
-## `fold` / `match`
-*Alias for [`match`](#match).*
+## `match` / `fold`
 
-Method `fold` destruct `Either<B, A>` to `C`.
+Method `match` destruct `Either<B, A>` to `C`.
 
 Type of output value can be different from `Left` and `Right`.
 
 ```mermaid
 flowchart LR
-    input("Either<<span>B, A</span>>")
-    input --> method
-    method{fold}
-    method --> | onLeft | resultLeft
-    method --> | onRight | resultRight
-    resultLeft([C])
-    resultRight([C])
-    resultLeft --> result
-    resultRight --> result
-    result(C)
+    style match stroke-width: 2px
 
+    input( Either<<span>B, A</span>> )
+    match{ match }
+    onLeft([ onLeft ])
+    onRight([ onRight ])
+    leftOutput( C )
+    rightOutput( C )
+    output( C )
+
+    input --> match
+    match --> | left | onLeft
+    match --> | right | onRight
+    onLeft --> leftOutput
+    onRight --> rightOutput
+    leftOutput --> output
+    rightOutput --> output
 ```
-
 
 ```ts
 import * as E from "fp-ts/lib/Either"
@@ -245,24 +249,32 @@ const v2: C = pipe(
 ```
 
 
-## `foldW` / `matchW`
-*Alias for [`matchW`](#matchW).*
+## `matchW` / `foldW`
 
-Method `foldW` destruct `Either<B, A>` to `C | D`. Less strict version of [`fold`](#fold).
+Method `matchW` destruct `Either<B, A>` to `D | C`. Less strict version of [`match`](#match).
 
 Type of output value can be different from `Left` and `Right`.
 
 ```mermaid
 flowchart LR
-input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
-    input --> right[Right<<span>A</span>>]
-        right --> | foldW | resultRight([<span>C</span>])
-        left -->  | foldW | resultLeft([<span>D</span>])
-            resultRight --> result(<span>C or D</span>)
-            resultLeft --> result(<span>C or D</span>)
+    style matchW stroke-width: 2px
 
+    input( Either<<span>B, A</span>> )
+    matchW{ matchW }
+    onLeft([ onLeft ])
+    onRight([ onRight ])
+    leftOutput( D )
+    rightOutput( C )
+    output("D | C")
+
+    input --> matchW
+    matchW --> | left | onLeft
+    matchW --> | right | onRight
+    onLeft --> leftOutput
+    onRight --> rightOutput
+    leftOutput --> output
+    rightOutput --> output
 ```
-
 
 ```ts
 import * as E from "fp-ts/lib/Either"
@@ -279,19 +291,19 @@ function value(toggle: boolean): E.Either<B, A> {
         : E.left("error")
 }
 
-const v1: C | D = pipe(
+const v1: D | C = pipe(
     value(true),
-    E.foldW(
-        left => null,
-        right => `Right: ${right}`,
+    E.matchW(
+        (left): D => null,
+        (right): C => `Right: ${right}`,
     )
 ) // "Right 123"
 
-const v2: C | D = pipe(
+const v2: D | C  = pipe(
     value(false),
-    E.foldW(
-        left => null,
-        right => `Right: ${right}`,
+    E.matchW(
+        (left): D => null,
+        (right): C => `Right: ${right}`,
     )
 ) // null
 ```
@@ -305,14 +317,22 @@ Type of output value must be same as type of `Right` value.
 
 ```mermaid
 flowchart LR
-    input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
-    input --> right[Right<<span>A</span>>]
-    right --> result([<span>C</span>])
-    left --> | getOrElse | resultLeft([<span>A</span>])
-    resultLeft --> result(<span>A</span>)
+    style getOrElse stroke-width: 2px
 
+    input("Either<<span>B, A</span>>")
+    getOrElse{ getOrElse }
+    onLeft([ onLeft ])
+    leftOutput( A )
+    rightOutput( A )
+    output( A )
+
+    input --> getOrElse
+    getOrElse --> | left | onLeft
+    getOrElse --> | right | rightOutput
+    onLeft --> leftOutput
+    leftOutput --> output
+    rightOutput --> output
 ```
-
 
 ```ts
 import * as E from "fp-ts/lib/Either"
@@ -330,14 +350,14 @@ function value(toggle: boolean): E.Either<B, A> {
 const v1: A = pipe(
     value(true),
     E.getOrElse(
-        err => -1
+        (err): A => -1
     ),
 ) // 123
 
 const v2: A = pipe(
     value(false),
     E.getOrElse(
-        err => -1
+        (err): A => -1
     )
 ) // -1
 ```
@@ -351,14 +371,22 @@ Type of output value can be different from type of `Right` value.
 
 ```mermaid
 flowchart LR
-    input("Either<<span>B, A</span>>") --> left[Left<<span>B</span>>]
-    input --> right[Right<<span>A</span>>]
-    right --> result([<span>C</span>])
-    left --> | getOrElseW | resultLeft([<span>C</span>])
-    resultLeft --> result(<span>A or C</span>)
+    style getOrElseW stroke-width: 2px
 
+    input("Either<<span>B, A</span>>")
+    getOrElseW{ getOrElseW }
+    onLeft([ onLeft ])
+    leftOutput( C )
+    rightOutput( A )
+    output("C | A")
+
+    input --> getOrElseW
+    getOrElseW --> | left | onLeft
+    getOrElseW --> | right | rightOutput
+    onLeft --> leftOutput
+    leftOutput --> output
+    rightOutput --> output
 ```
-
 
 ```ts
 import * as E from "fp-ts/lib/Either"
@@ -374,17 +402,17 @@ function value(toggle: boolean): E.Either<B, A> {
         : E.left("error")
 }
 
-const v1: A | C = pipe(
+const v1: C | A = pipe(
     value(true),
     E.getOrElseW(
-        err => `My stirng: ${err}`
+        (err): C => `My stirng: ${err}`
     ),
 ) // 123
 
-const v2: A | C = pipe(
+const v2: C | A = pipe(
     value(false),
     E.getOrElseW(
-        err => `My stirng: ${err}`
+        (err): C => `My stirng: ${err}`
     ),
 ) // "My stirng: error"
 ```
