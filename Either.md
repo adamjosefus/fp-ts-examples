@@ -2,6 +2,7 @@
 
 - [combinators](#combinators)
   - [`apFirst`](#apfirst)
+  - [`apFirstW`](#apfirstw)
 - [constructors](#constructors)
   - [`fromPredicate`](#frompredicate)
   - [`left`](#left)
@@ -21,32 +22,37 @@
 ## `apFirst`
 Combine two effectfull actions, keeping only the result of the first.
 
-
 ```mermaid
 flowchart LR
     style apFirst stroke-width: 2px
 
     input( Either<<span>B, A</span>> )
+    secondInput( Either<<span>B, C</span>> )
+    
     apFirst{ <b>apFirst</b> }
     second{{ second }}
-    outputRight("Either<<span>never, A</span>>")
-    outputLeft("Either<<span>B, never</span>>")
+    outputLeft("Left<<span>B</span>>")
+    secondOutputRight("Right<<span>A</span>>")
+    output("Either<<span>B, A</span>>")
 
-    input --> apFirst
+    input ---> apFirst
+    secondInput --> second
     apFirst --> | right | second
-    apFirst --> | left | outputLeft
-    second --> | right | outputRight
+    apFirst ---> | left | outputLeft
+    second --> | right | secondOutputRight
     second --> | left | outputLeft
+    outputLeft --> output
+    secondOutputRight --> output
 ```
-
 
 ```ts
 import * as E from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
+
 type A = number
 type B = "error"
-type C = unknown
+type C = string
 
 function value(toggle: boolean): E.Either<B, A> {
     return toggle
@@ -60,6 +66,7 @@ function anotherValue(toggle: boolean): E.Either<B, C> {
         : E.left("error")
 }
 
+
 const v1: E.Either<B, A> = pipe(
     value(true),
     E.apFirst(
@@ -68,16 +75,16 @@ const v1: E.Either<B, A> = pipe(
 ) // { _tag: 'Right', right: 123 }
 
 const v2: E.Either<B, A> = pipe(
-    value(true),
+    value(false),
     E.apFirst(
         anotherValue(true)
     )
 ) // { _tag: 'Left', left: 'error' }
 
 const v3: E.Either<B, A> = pipe(
-    value(false),
+    value(true),
     E.apFirst(
-        anotherValue(true)
+        anotherValue(false)
     )
 ) // { _tag: 'Left', left: 'error' }
 
@@ -89,6 +96,88 @@ const v4: E.Either<B, A> = pipe(
 ) // { _tag: 'Left', left: 'error' }
 ```
 
+
+## `apFirstW`
+
+Less strict version of [apFirst](#apFirst).
+
+```mermaid
+flowchart LR
+    style apFirstW stroke-width: 2px
+
+    input( Either<<span>B, A</span>> )
+    secondInput( Either<<span>D, C</span>> )
+    
+    apFirstW{ <b>apFirstW</b> }
+    second{{ second }}
+    outputLeft("Left<<span>B</span>>")
+    secondOutputLeft("Left<<span>D</span>>")
+    secondOutputRight("Right<<span>A</span>>")
+    output("Either<<span>B | D, A</span>>")
+
+    input ---> apFirstW
+    secondInput --> second
+    apFirstW --> | right | second
+    apFirstW ---> | left | outputLeft
+    second --> | right | secondOutputRight
+    second --> | left | secondOutputLeft
+    outputLeft --> output
+    secondOutputLeft --> output
+    secondOutputRight --> output
+```
+
+```ts
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
+
+
+type A = number
+type B = "error"
+type C = string
+type D = "exception"
+
+function value(toggle: boolean): E.Either<B | D, A> {
+    return toggle
+        ? E.right(123)
+        : E.left("error")
+}
+
+function anotherValue(toggle: boolean): E.Either<D, C> {
+    return toggle
+        ? E.right("abc")
+        : E.left("exception")
+}
+
+
+const v1: E.Either<B | D, A> = pipe(
+    value(true),
+    E.apFirstW(
+        anotherValue(true)
+    )
+) // { _tag: 'Right', right: 123 }
+
+const v2: E.Either<B | D, A> = pipe(
+    value(false),
+    E.apFirstW(
+        anotherValue(true)
+    )
+) // { _tag: 'Left', left: 'error' }
+
+const v3: E.Either<B | D, A> = pipe(
+    value(true),
+    E.apFirstW(
+        anotherValue(false)
+    )
+) // { _tag: 'Left', left: 'exception' }
+
+const v4: E.Either<B | D, A> = pipe(
+    value(false),
+    E.apFirstW(
+        anotherValue(false)
+    ),
+    x => x
+) // { _tag: 'Left', left: 'error' }
+```
 
 ---
 
@@ -110,7 +199,7 @@ flowchart LR
     leftValue( B )
     output( Either<<span>B, A</span>> )
 
-    input --> fromPredicate
+    input ---> fromPredicate
     fromPredicate --> predicate
     predicate --> | true | output
     predicate --> | false | onFalse
@@ -147,7 +236,7 @@ flowchart LR
     left{ <b>left<b> }
     output( Either<<span>B, never</span>> )
 
-    input --> left
+    input ---> left
     left --> output
 ```
 
@@ -170,7 +259,7 @@ flowchart LR
     right{ <b>right<b> }
     output( Either<<span>never, A</span>> )
 
-    input --> right
+    input ---> right
     right --> output
 ```
 
@@ -208,7 +297,7 @@ flowchart LR
     rightOutput( C )
     output( C )
 
-    input --> match
+    input ---> match
     match --> | left | onLeft
     match --> | right | onRight
     onLeft --> leftOutput
@@ -267,7 +356,7 @@ flowchart LR
     rightOutput( C )
     output("D | C")
 
-    input --> matchW
+    input ---> matchW
     matchW --> | left | onLeft
     matchW --> | right | onRight
     onLeft --> leftOutput
@@ -326,7 +415,7 @@ flowchart LR
     rightOutput( A )
     output( A )
 
-    input --> getOrElse
+    input ---> getOrElse
     getOrElse --> | left | onLeft
     getOrElse --> | right | rightOutput
     onLeft --> leftOutput
@@ -380,7 +469,7 @@ flowchart LR
     rightOutput( A )
     output("C | A")
 
-    input --> getOrElseW
+    input ---> getOrElseW
     getOrElseW --> | left | onLeft
     getOrElseW --> | right | rightOutput
     onLeft --> leftOutput
