@@ -1,2 +1,5 @@
-{"dependencies":{"fp-ts":"^2.12.2"}}
-
+{
+    "dependencies": {
+        "fp-ts": "^2.12.2"
+    }
+}
