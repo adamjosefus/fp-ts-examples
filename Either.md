@@ -24,6 +24,7 @@ Combine two effectfull actions, keeping only the result of the first.
 
 ```mermaid
 flowchart LR
+    style input stroke-width: 2px
     style apFirst stroke-width: 2px
 
     input( Either<<span>B, A</span>> )
@@ -103,11 +104,11 @@ Less strict version of [apFirst](#apFirst).
 
 ```mermaid
 flowchart LR
+    style input stroke-width: 2px
     style apFirstW stroke-width: 2px
 
     input( Either<<span>B, A</span>> )
     secondInput( Either<<span>D, C</span>> )
-    
     apFirstW{ <b>apFirstW</b> }
     second{{ second }}
     outputLeft("Left<<span>B</span>>")
@@ -115,11 +116,11 @@ flowchart LR
     secondOutputRight("Right<<span>A</span>>")
     output("Either<<span>B | D, A</span>>")
 
+    second --> | right | secondOutputRight
+    apFirstW --> | right | second
     input ---> apFirstW
     secondInput --> second
-    apFirstW --> | right | second
     apFirstW ---> | left | outputLeft
-    second --> | right | secondOutputRight
     second --> | left | secondOutputLeft
     outputLeft --> output
     secondOutputLeft --> output
@@ -190,6 +191,7 @@ Creates `Either` from value.
 
 ```mermaid
 flowchart LR
+    style input stroke-width: 2px
     style fromPredicate stroke-width: 2px
 
     input( A )
@@ -230,6 +232,7 @@ const v: E.Either<B, A> = pipe(
 
 ```mermaid
 flowchart LR
+    style input stroke-width: 2px
     style left stroke-width: 2px
 
     input("B")
@@ -253,6 +256,7 @@ const v: E.Either<B, never> = E.left("error")
 
 ```mermaid
 flowchart LR
+    style input stroke-width: 2px
     style right stroke-width: 2px
 
     input("A")
@@ -287,6 +291,7 @@ Type of output value can be different from `Left` and `Right`.
 
 ```mermaid
 flowchart LR
+    style input stroke-width: 2px
     style match stroke-width: 2px
 
     input( Either<<span>B, A</span>> )
@@ -346,6 +351,7 @@ Type of output value can be different from `Left` and `Right`.
 
 ```mermaid
 flowchart LR
+    style input stroke-width: 2px
     style matchW stroke-width: 2px
 
     input( Either<<span>B, A</span>> )
@@ -406,6 +412,7 @@ Type of output value must be same as type of `Right` value.
 
 ```mermaid
 flowchart LR
+    style input stroke-width: 2px
     style getOrElse stroke-width: 2px
 
     input("Either<<span>B, A</span>>")
@@ -460,6 +467,7 @@ Type of output value can be different from type of `Right` value.
 
 ```mermaid
 flowchart LR
+    style input stroke-width: 2px
     style getOrElseW stroke-width: 2px
 
     input("Either<<span>B, A</span>>")
