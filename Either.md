@@ -47,57 +47,62 @@ flowchart LR
     secondOutputRight --> output
 ```
 
+<details>
+<summary>Code Example</summary>
+  
 ```ts
-import * as E from "fp-ts/lib/Either"
-import { pipe } from "fp-ts/lib/function"
+    import * as E from "fp-ts/lib/Either"
+    import { pipe } from "fp-ts/lib/function"
 
 
-type A = number
-type B = "error"
-type C = string
+    type A = number
+    type B = "error"
+    type C = string
 
-function value(toggle: boolean): E.Either<B, A> {
-    return toggle
-        ? E.right(123)
-        : E.left("error")
-}
+    function value(toggle: boolean): E.Either<B, A> {
+        return toggle
+            ? E.right(123)
+            : E.left("error")
+    }
 
-function anotherValue(toggle: boolean): E.Either<B, C> {
-    return toggle
-        ? E.right("abc")
-        : E.left("error")
-}
+    function anotherValue(toggle: boolean): E.Either<B, C> {
+        return toggle
+            ? E.right("abc")
+            : E.left("error")
+    }
 
 
-const v1: E.Either<B, A> = pipe(
-    value(true),
-    E.apFirst(
-        anotherValue(true)
-    )
-) // { _tag: 'Right', right: 123 }
+    const v1: E.Either<B, A> = pipe(
+        value(true),
+        E.apFirst(
+            anotherValue(true)
+        )
+    ) // { _tag: 'Right', right: 123 }
 
-const v2: E.Either<B, A> = pipe(
-    value(false),
-    E.apFirst(
-        anotherValue(true)
-    )
-) // { _tag: 'Left', left: 'error' }
+    const v2: E.Either<B, A> = pipe(
+        value(false),
+        E.apFirst(
+            anotherValue(true)
+        )
+    ) // { _tag: 'Left', left: 'error' }
 
-const v3: E.Either<B, A> = pipe(
-    value(true),
-    E.apFirst(
-        anotherValue(false)
-    )
-) // { _tag: 'Left', left: 'error' }
+    const v3: E.Either<B, A> = pipe(
+        value(true),
+        E.apFirst(
+            anotherValue(false)
+        )
+    ) // { _tag: 'Left', left: 'error' }
 
-const v4: E.Either<B, A> = pipe(
-    value(false),
-    E.apFirst(
-        anotherValue(false)
-    )
-) // { _tag: 'Left', left: 'error' }
+    const v4: E.Either<B, A> = pipe(
+        value(false),
+        E.apFirst(
+            anotherValue(false)
+        )
+    ) // { _tag: 'Left', left: 'error' }
 ```
+</details>
 
+---
 
 ## `apFirstW`
 
@@ -127,6 +132,9 @@ flowchart LR
     secondOutputLeft --> output
     secondOutputRight --> output
 ```
+
+<details>
+<summary>Code Example</summary>
 
 ```ts
 import * as E from "fp-ts/lib/Either"
@@ -180,7 +188,9 @@ const v4: E.Either<B | D, A> = pipe(
     x => x
 ) // { _tag: 'Left', left: 'error' }
 ```
+</details>
 
+---
 
 ## `apSecond`
 
