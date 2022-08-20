@@ -20,7 +20,7 @@
 # combinators
 
 ## `apFirst`
-Combine two effectfull actions, keeping only the result of the first.
+Combine two effectful actions, keeping only the result of the first.
 
 ```mermaid
 flowchart LR
