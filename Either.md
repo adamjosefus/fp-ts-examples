@@ -3,6 +3,7 @@
 - [combinators](#combinators)
   - [`apFirst`](#apfirst)
   - [`apFirstW`](#apfirstw)
+  - [`apSecond`](#apsecond)
 - [constructors](#constructors)
   - [`fromPredicate`](#frompredicate)
   - [`left`](#left)
@@ -179,6 +180,87 @@ const v4: E.Either<B | D, A> = pipe(
     x => x
 ) // { _tag: 'Left', left: 'error' }
 ```
+
+
+## `apSecond`
+
+Combine two effectful actions, keeping only the result of the second.
+
+```mermaid
+flowchart LR
+    style input stroke-width: 2px
+    style apSecond stroke-width: 2px
+
+    input( Either<<span>B, A</span>> )
+    apSecond{ <b>apSecond</b> }
+    output("Either<<span>B, C</span>>")
+    outputLeft("Left<<span>B</span>>")
+    second{{ second }}
+    secondInput( Either<<span>B, C</span>> )
+    secondOutputRight("Right<<span>C</span>>")
+
+    input ---> apSecond
+    secondInput --> second
+    apSecond --> | right | second
+    apSecond ---> | left | outputLeft
+    second --> | right | secondOutputRight
+    second --> | left | outputLeft
+    outputLeft --> output
+    secondOutputRight --> output
+```
+
+
+```ts
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
+
+
+type A = number
+type B = "error"
+type C = string
+
+function value(toggle: boolean): E.Either<B, A> {
+    return toggle
+        ? E.right(123)
+        : E.left("error")
+}
+
+function anotherValue(toggle: boolean): E.Either<B, C> {
+    return toggle
+        ? E.right("abc")
+        : E.left("error")
+}
+
+
+const v1: E.Either<B, C> = pipe(
+    value(true),
+    E.apSecond(
+        anotherValue(true)
+    )
+) // { _tag: 'Right', right: 'abc' }
+
+const v2: E.Either<B, C> = pipe(
+    value(false),
+    E.apSecond(
+        anotherValue(true)
+    )
+) // { _tag: 'Left', left: 'error' }
+
+const v3: E.Either<B, C> = pipe(
+    value(true),
+    E.apSecond(
+        anotherValue(false)
+    )
+) // { _tag: 'Left', left: 'error' }
+
+const v4: E.Either<B, C> = pipe(
+    value(false),
+    E.apSecond(
+        anotherValue(false)
+    )
+) // { _tag: 'Left', left: 'error' }
+```
+
 
 ---
 
