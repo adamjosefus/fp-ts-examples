@@ -272,7 +272,7 @@ const v4: E.Either<B, C> = pipe(
 
 ## `apSecondW`
 
-Combine two effectful actions, keeping only the result of the second.
+Less strict version of (`apSecond`)[#apSecond]
 
 ```mermaid
 flowchart LR
