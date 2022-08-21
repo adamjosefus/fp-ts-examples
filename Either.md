@@ -4,6 +4,7 @@
   - [`apFirst`](#apfirst)
   - [`apFirstW`](#apfirstw)
   - [`apSecond`](#apsecond)
+  - [`apSecondW`](#apsecondw)
 - [constructors](#constructors)
   - [`fromPredicate`](#frompredicate)
   - [`left`](#left)
@@ -180,8 +181,7 @@ const v4: E.Either<B | D, A> = pipe(
     value(false),
     E.apFirstW(
         anotherValue(false)
-    ),
-    x => x
+    )
 ) // { _tag: 'Left', left: 'error' }
 ```
 </details>
@@ -262,6 +262,91 @@ const v3: E.Either<B, C> = pipe(
 const v4: E.Either<B, C> = pipe(
     value(false),
     E.apSecond(
+        anotherValue(false)
+    )
+) // { _tag: 'Left', left: 'error' }
+```
+</details>
+
+---
+
+## `apSecondW`
+
+Combine two effectful actions, keeping only the result of the second.
+
+```mermaid
+flowchart LR
+    style input stroke-width: 2px
+    style apSecondW stroke-width: 2px
+
+    input( Either<<span>B, A</span>> )
+    apSecondW{ <b>apSecondW</b> }
+    output("Either<<span>B | D, C</span>>")
+    outputLeft("Left<<span>B</span>>")
+    secondOutputLeft("Left<<span>D</span>>")
+    second{{ second }}
+    secondInput( Either<<span>B, C</span>> )
+    secondOutputRight("Right<<span>C</span>>")
+
+    input ---> apSecondW
+    secondInput --> second
+    apSecondW --> | right | second
+    apSecondW ---> | left | outputLeft
+    second --> | right | secondOutputRight
+    second --> | left | secondOutputLeft
+    outputLeft --> output
+    secondOutputLeft --> output
+    secondOutputRight --> output
+```
+
+<details>
+<summary>Code Example</summary>
+
+```ts
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
+
+type A = number
+type B = "error"
+type C = string
+type D = "exception"
+
+function value(toggle: boolean): E.Either<B | D, A> {
+    return toggle
+        ? E.right(123)
+        : E.left("error")
+}
+
+function anotherValue(toggle: boolean): E.Either<D, C> {
+    return toggle
+        ? E.right("abc")
+        : E.left("exception")
+}
+
+const v1: E.Either<B | D, C> = pipe(
+    value(true),
+    E.apSecondW(
+        anotherValue(true)
+    )
+) // { _tag: 'Right', right: 'abc' }
+
+const v2: E.Either<B | D, C> = pipe(
+    value(false),
+    E.apSecondW(
+        anotherValue(true)
+    )
+) // { _tag: 'Left', left: 'error' }
+
+const v3: E.Either<B | D, C> = pipe(
+    value(true),
+    E.apSecondW(
+        anotherValue(false)
+    )
+) // { _tag: 'Left', left: 'exception' }
+
+const v4: E.Either<B | D, C> = pipe(
+    value(false),
+    E.apSecondW(
         anotherValue(false)
     )
 ) // { _tag: 'Left', left: 'error' }
