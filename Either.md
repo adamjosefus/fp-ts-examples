@@ -272,7 +272,7 @@ const v4: E.Either<B, C> = pipe(
 
 ## `apSecondW`
 
-Less strict version of (`apSecond`)[#apSecond]
+Less strict version of (`apSecond`)[#apSecond].
 
 ```mermaid
 flowchart LR
