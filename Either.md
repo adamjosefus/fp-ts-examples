@@ -54,7 +54,6 @@ flowchart LR
     import * as E from "fp-ts/lib/Either"
     import { pipe } from "fp-ts/lib/function"
 
-
     type A = number
     type B = "error"
     type C = string
@@ -70,7 +69,6 @@ flowchart LR
             ? E.right("abc")
             : E.left("error")
     }
-
 
     const v1: E.Either<B, A> = pipe(
         value(true),
@@ -140,7 +138,6 @@ flowchart LR
 import * as E from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
-
 type A = number
 type B = "error"
 type C = string
@@ -157,7 +154,6 @@ function anotherValue(toggle: boolean): E.Either<D, C> {
         ? E.right("abc")
         : E.left("exception")
 }
-
 
 const v1: E.Either<B | D, A> = pipe(
     value(true),
@@ -219,11 +215,12 @@ flowchart LR
     secondOutputRight --> output
 ```
 
+<details>
+<summary>Code Example</summary>
 
 ```ts
 import * as E from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
-
 
 type A = number
 type B = "error"
@@ -240,7 +237,6 @@ function anotherValue(toggle: boolean): E.Either<B, C> {
         ? E.right("abc")
         : E.left("error")
 }
-
 
 const v1: E.Either<B, C> = pipe(
     value(true),
@@ -270,10 +266,9 @@ const v4: E.Either<B, C> = pipe(
     )
 ) // { _tag: 'Left', left: 'error' }
 ```
-
+</details>
 
 ---
-
 
 # constructors
 Creates `Either` from value.
@@ -302,6 +297,8 @@ flowchart LR
     
 ```
 
+<details>
+<summary>Code Example</summary>
 
 ```ts
 import * as E from "fp-ts/lib/Either"
@@ -318,7 +315,9 @@ const v: E.Either<B, A> = pipe(
     )
 )
 ```
+</details>
 
+---
 
 ## `left`
 
@@ -335,6 +334,9 @@ flowchart LR
     left --> output
 ```
 
+<details>
+<summary>Code Example</summary>
+
 ```ts
 import * as E from "fp-ts/lib/Either"
 
@@ -342,7 +344,9 @@ type B = "error"
 
 const v: E.Either<B, never> = E.left("error")
 ```
+</details>
 
+---
 
 ## `right`
 
@@ -359,6 +363,9 @@ flowchart LR
     right --> output
 ```
 
+<details>
+<summary>Code Example</summary>
+
 ```ts
 import * as E from "fp-ts/lib/Either"
 
@@ -366,6 +373,7 @@ type A = number
 
 const v: E.Either<never, A> = E.right(123)
 ```
+</details>
 
 
 ---
@@ -403,6 +411,9 @@ flowchart LR
     rightOutput --> output
 ```
 
+<details>
+<summary>Code Example</summary>
+
 ```ts
 import * as E from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
@@ -433,7 +444,9 @@ const v2: C = pipe(
     )
 ) // "Left error"
 ```
+</details>
 
+---
 
 ## `matchW` / `foldW`
 
@@ -462,6 +475,9 @@ flowchart LR
     leftOutput --> output
     rightOutput --> output
 ```
+
+<details>
+<summary>Code Example</summary>
 
 ```ts
 import * as E from "fp-ts/lib/Either"
@@ -494,6 +510,10 @@ const v2: D | C  = pipe(
     )
 ) // null
 ```
+</details>
+
+
+---
 
 
 ## `getOrElse`
@@ -522,6 +542,9 @@ flowchart LR
     rightOutput --> output
 ```
 
+<details>
+<summary>Code Example</summary>
+
 ```ts
 import * as E from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
@@ -549,7 +572,9 @@ const v2: A = pipe(
     )
 ) // -1
 ```
+</details>
 
+---
 
 ## `getOrElseW`
 
@@ -576,6 +601,9 @@ flowchart LR
     leftOutput --> output
     rightOutput --> output
 ```
+
+<details>
+<summary>Code Example</summary>
 
 ```ts
 import * as E from "fp-ts/lib/Either"
@@ -605,3 +633,6 @@ const v2: C | A = pipe(
     ),
 ) // "My stirng: error"
 ```
+</details>
+
+---
