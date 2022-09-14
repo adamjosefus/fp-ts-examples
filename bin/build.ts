@@ -28,7 +28,6 @@ async function updateContent(content: string, root: string): Promise<string> {
             .filter((v, i, arr) => arr.indexOf(v) === i)
             .map(path => (async () => {
                 const file = join(root, path)
-                // const raw = await Deno.readTextFile(file)
                 const content = await loadFile(file)
 
                 return [path, content] as [string, string]
@@ -45,7 +44,7 @@ async function updateContent(content: string, root: string): Promise<string> {
     return content.replace(regex, (_match, _p1, _offset, _string, groups) => {
         const path = normalizePath(groups.path);
 
-        if (!dictionary.has(path)) return '🛑'
+        if (!dictionary.has(path)) return '`<!-- Error 🛑 -->`'
 
         return dictionary.get(path)!
     })
@@ -53,10 +52,14 @@ async function updateContent(content: string, root: string): Promise<string> {
 
 
 async function loadFile(file: string): Promise<string> {
-    const root = dirname(file)
-    const content = await Deno.readTextFile(file)
+    try {
+        const root = dirname(file)
+        const content = await Deno.readTextFile(file)
 
-    return await updateContent(content, root)
+        return await updateContent(content, root)
+    } catch (error) {
+        return `<!-- Error 🛑 ${error} -->`;
+    }
 }
 
 
