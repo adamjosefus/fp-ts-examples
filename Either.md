@@ -1,8 +1,5 @@
 <h1><code>Either</code></h1>
 
-- [instance operations](#instance-operations)
-  - [`alt`](#alt)
-  - [`altW`](#altw)
 - [combinators](#combinators)
   - [`apFirst`](#apfirst)
   - [`apFirstW`](#apfirstw)
@@ -17,179 +14,10 @@
   - [`matchW` / `foldW`](#matchw--foldw)
   - [`getOrElse`](#getorelse)
   - [`getOrElseW`](#getorelsew)
+- [instance operations](#instance-operations)
+  - [`alt`](#alt)
+  - [`altW`](#altw)
 
-
-# instance operations
-
-## `alt`
-
-<!-- ## `alt` -->
-
-Identifies an associative operation on a type constructor.
-It is similar to `Semigroup`, except that it applies to types of kind `* → *`.
-
-```mermaid
-flowchart LR
-    style input stroke-width: 2px
-    style alt stroke-width: 2px
-
-    input( Either<<span>E1, A</span>> )
-    alt{ <b>alt</b> }
-    that{{ that }}
-    thatInput( Either<<span>E1, A</span>> )
-    outputRight( Right<<span>A</span>> )
-    outputLeft( Left<<span>E1</span>> )
-    output("Either<<span>E1, A</span>>")
-
-    input ---> alt
-    alt --> | left | that
-    alt --> | right | outputRight
-    thatInput --> that
-    that --> | left | outputLeft
-    that --> | right | outputRight
-    outputLeft --> output
-    outputRight --> output
-```
-
-
-<details>
-<summary>Code Example</summary>
-
-```ts
-import { Either, left, right, alt } from "fp-ts/lib/Either"
-import { pipe } from "fp-ts/lib/function"
-
-type A = number
-type E1 = "error"
-
-function value(v: number | null): Either<E1, A> {
-    return v !== null
-        ? right(v)
-        : left("error")
-}
-
-const v1: Either<E1, A> = pipe(
-    value(123),
-    alt(
-        () => value(789)
-    )
-) // { _tag: 'Right', right: 123 }
-
-const v2: Either<E1, A> = pipe(
-    value(123),
-    alt(
-        () => value(null)
-    )
-) // { _tag: 'Right', right: 123 }
-
-const v3: Either<E1, A> = pipe(
-    value(null),
-    alt(
-        () => value(789)
-    )
-) // { _tag: 'Right', right: 789 }
-
-const v4: Either<E1, A> = pipe(
-    value(null),
-    alt(
-        () => value(null)
-    )
-) // { _tag: 'Left', left: 'error' }
-```
-
-</details>
-
----
-
-## `altW`
-
-<!-- ## `altW` -->
-
-Less strict version of [`alt`](#alt).
-
-```mermaid
-flowchart LR
-    style input stroke-width: 2px
-    style altW stroke-width: 2px
-
-    input( Either<<span>E1, A</span>> )
-    altW{ <b>altW</b> }
-    that{{ that }}
-    thatInput( Either<<span>E2, B</span>> )
-    altWOutputRight( Right<<span>A</span>> )
-    thatOutputRight( Right<<span>B</span>> )
-    thatOutputLeft( Left<<span>E2</span>> )
-    output("Either<<span>E2, A | B</span>>")
-
-    input ---> altW
-    altW --> | left | that
-    altW --> | right | altWOutputRight
-    thatInput --> that
-    that --> | left | thatOutputLeft
-    that --> | right | thatOutputRight
-    thatOutputLeft --> output
-    altWOutputRight --> output
-    thatOutputRight --> output
-```
-
-<details>
-<summary>Code Example</summary>
-
-```ts
-import { Either, left, right, altW } from "fp-ts/lib/Either"
-import { pipe } from "fp-ts/lib/function"
-
-type A = number
-type B = string
-type E1 = "error"
-type E2 = "exception"
-
-
-function value(v: number | null): Either<E1, A> {
-    return v !== null
-        ? right(v)
-        : left("error")
-}
-
-function anotherValue(v: string | null): Either<E2, B> {
-    return v !== null
-        ? right(v)
-        : left("exception")
-}
-
-
-const v1: Either<E2, A | B> = pipe(
-    value(123),
-    altW(
-        () => anotherValue("abc")
-    )
-) // { _tag: 'Right', right: 123 }
-
-const v2: Either<E2, A | B> = pipe(
-    value(123),
-    altW(
-        () => anotherValue(null)
-    )
-) // { _tag: 'Right', right: 123 }
-
-const v3: Either<E2, A | B> = pipe(
-    value(null),
-    altW(
-        () => anotherValue("xyz")
-    )
-) // { _tag: 'Right', right: 'xyz' }
-
-const v4: Either<E2, A | B> = pipe(
-    value(null),
-    altW(
-        () => anotherValue(null)
-    )
-) // { _tag: 'Left', left: 'exception' }
-```
-
-</details>
-
----
 
 # combinators
 
@@ -931,3 +759,176 @@ const v2: A | B = pipe(
 ```
 
 </details>
+
+---
+
+# instance operations
+
+## `alt`
+
+<!-- ## `alt` -->
+
+Identifies an associative operation on a type constructor.
+It is similar to `Semigroup`, except that it applies to types of kind `* → *`.
+
+```mermaid
+flowchart LR
+    style input stroke-width: 2px
+    style alt stroke-width: 2px
+
+    input( Either<<span>E1, A</span>> )
+    alt{ <b>alt</b> }
+    that{{ that }}
+    thatInput( Either<<span>E1, A</span>> )
+    outputRight( Right<<span>A</span>> )
+    outputLeft( Left<<span>E1</span>> )
+    output("Either<<span>E1, A</span>>")
+
+    input ---> alt
+    alt --> | left | that
+    alt --> | right | outputRight
+    thatInput --> that
+    that --> | left | outputLeft
+    that --> | right | outputRight
+    outputLeft --> output
+    outputRight --> output
+```
+
+
+<details>
+<summary>Code Example</summary>
+
+```ts
+import { Either, left, right, alt } from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
+
+type A = number
+type E1 = "error"
+
+function value(v: number | null): Either<E1, A> {
+    return v !== null
+        ? right(v)
+        : left("error")
+}
+
+const v1: Either<E1, A> = pipe(
+    value(123),
+    alt(
+        () => value(789)
+    )
+) // { _tag: 'Right', right: 123 }
+
+const v2: Either<E1, A> = pipe(
+    value(123),
+    alt(
+        () => value(null)
+    )
+) // { _tag: 'Right', right: 123 }
+
+const v3: Either<E1, A> = pipe(
+    value(null),
+    alt(
+        () => value(789)
+    )
+) // { _tag: 'Right', right: 789 }
+
+const v4: Either<E1, A> = pipe(
+    value(null),
+    alt(
+        () => value(null)
+    )
+) // { _tag: 'Left', left: 'error' }
+```
+
+</details>
+
+---
+
+## `altW`
+
+<!-- ## `altW` -->
+
+Less strict version of [`alt`](#alt).
+
+```mermaid
+flowchart LR
+    style input stroke-width: 2px
+    style altW stroke-width: 2px
+
+    input( Either<<span>E1, A</span>> )
+    altW{ <b>altW</b> }
+    that{{ that }}
+    thatInput( Either<<span>E2, B</span>> )
+    altWOutputRight( Right<<span>A</span>> )
+    thatOutputRight( Right<<span>B</span>> )
+    thatOutputLeft( Left<<span>E2</span>> )
+    output("Either<<span>E2, A | B</span>>")
+
+    input ---> altW
+    altW --> | left | that
+    altW --> | right | altWOutputRight
+    thatInput --> that
+    that --> | left | thatOutputLeft
+    that --> | right | thatOutputRight
+    thatOutputLeft --> output
+    altWOutputRight --> output
+    thatOutputRight --> output
+```
+
+<details>
+<summary>Code Example</summary>
+
+```ts
+import { Either, left, right, altW } from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
+
+type A = number
+type B = string
+type E1 = "error"
+type E2 = "exception"
+
+
+function value(v: number | null): Either<E1, A> {
+    return v !== null
+        ? right(v)
+        : left("error")
+}
+
+function anotherValue(v: string | null): Either<E2, B> {
+    return v !== null
+        ? right(v)
+        : left("exception")
+}
+
+
+const v1: Either<E2, A | B> = pipe(
+    value(123),
+    altW(
+        () => anotherValue("abc")
+    )
+) // { _tag: 'Right', right: 123 }
+
+const v2: Either<E2, A | B> = pipe(
+    value(123),
+    altW(
+        () => anotherValue(null)
+    )
+) // { _tag: 'Right', right: 123 }
+
+const v3: Either<E2, A | B> = pipe(
+    value(null),
+    altW(
+        () => anotherValue("xyz")
+    )
+) // { _tag: 'Right', right: 'xyz' }
+
+const v4: Either<E2, A | B> = pipe(
+    value(null),
+    altW(
+        () => anotherValue(null)
+    )
+) // { _tag: 'Left', left: 'exception' }
+```
+
+</details>
+
