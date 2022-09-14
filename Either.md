@@ -23,7 +23,10 @@
 
 ## `alt`
 
-Identifies an associative operation on a type constructor. It is similar to `Semigroup`, except that it applies to types of kind `* → *`.
+<!-- ## `alt` -->
+
+Identifies an associative operation on a type constructor.
+It is similar to `Semigroup`, except that it applies to types of kind `* → *`.
 
 ```mermaid
 flowchart LR
@@ -97,7 +100,10 @@ const v4: Either<E1, A> = pipe(
 </details>
 
 ---
+
 ## `altW`
+
+<!-- ## `altW` -->
 
 Less strict version of [`alt`](#alt).
 
@@ -185,10 +191,12 @@ const v4: Either<E2, A | B> = pipe(
 
 ---
 
-
 # combinators
 
 ## `apFirst`
+
+<!-- ## `apFirst` -->
+
 Combine two effectful actions, keeping only the result of the first.
 
 Derivable from `Apply`. <!-- TODO: Add link -->
@@ -222,58 +230,61 @@ flowchart LR
 <summary>Code Example</summary>
   
 ```ts
-    import * as E from "fp-ts/lib/Either"
-    import { pipe } from "fp-ts/lib/function"
+import * as E from "fp-ts/lib/Either"
+import { pipe } from "fp-ts/lib/function"
 
-    type A = number
-    type B = "error"
-    type C = string
+type A = number
+type B = string
+type E1 = "error"
 
-    function value(toggle: boolean): E.Either<B, A> {
-        return toggle
-            ? E.right(123)
-            : E.left("error")
-    }
+function value(toggle: boolean): E.Either<E1, A> {
+    return toggle
+        ? E.right(123)
+        : E.left("error")
+}
 
-    function anotherValue(toggle: boolean): E.Either<B, C> {
-        return toggle
-            ? E.right("abc")
-            : E.left("error")
-    }
+function anotherValue(toggle: boolean): E.Either<E1, B> {
+    return toggle
+        ? E.right("abc")
+        : E.left("error")
+}
 
-    const v1: E.Either<B, A> = pipe(
-        value(true),
-        E.apFirst(
-            anotherValue(true)
-        )
-    ) // { _tag: 'Right', right: 123 }
+const v1: E.Either<E1, A> = pipe(
+    value(true),
+    E.apFirst(
+        anotherValue(true)
+    )
+) // { _tag: 'Right', right: 123 }
 
-    const v2: E.Either<B, A> = pipe(
-        value(false),
-        E.apFirst(
-            anotherValue(true)
-        )
-    ) // { _tag: 'Left', left: 'error' }
+const v2: E.Either<E1, A> = pipe(
+    value(false),
+    E.apFirst(
+        anotherValue(true)
+    )
+) // { _tag: 'Left', left: 'error' }
 
-    const v3: E.Either<B, A> = pipe(
-        value(true),
-        E.apFirst(
-            anotherValue(false)
-        )
-    ) // { _tag: 'Left', left: 'error' }
+const v3: E.Either<E1, A> = pipe(
+    value(true),
+    E.apFirst(
+        anotherValue(false)
+    )
+) // { _tag: 'Left', left: 'error' }
 
-    const v4: E.Either<B, A> = pipe(
-        value(false),
-        E.apFirst(
-            anotherValue(false)
-        )
-    ) // { _tag: 'Left', left: 'error' }
+const v4: E.Either<E1, A> = pipe(
+    value(false),
+    E.apFirst(
+        anotherValue(false)
+    )
+) // { _tag: 'Left', left: 'error' }
 ```
 </details>
+
 
 ---
 
 ## `apFirstW`
+
+<!-- ## `apFirstW` -->
 
 Less strict version of [apFirst](#apFirst).
 
@@ -306,59 +317,62 @@ flowchart LR
 <summary>Code Example</summary>
 
 ```ts
-import * as E from "fp-ts/lib/Either"
+import { Either, left, right, apFirstW } from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
 type A = number
-type B = "error"
-type C = string
-type D = "exception"
+type B = string
+type E1 = "error"
+type E2 = "exception"
 
-function value(toggle: boolean): E.Either<B | D, A> {
+function value(toggle: boolean): Either<E1 | E2, A> {
     return toggle
-        ? E.right(123)
-        : E.left("error")
+        ? right(123)
+        : left("error")
 }
 
-function anotherValue(toggle: boolean): E.Either<D, C> {
+function anotherValue(toggle: boolean): Either<E2, B> {
     return toggle
-        ? E.right("abc")
-        : E.left("exception")
+        ? right("abc")
+        : left("exception")
 }
 
-const v1: E.Either<B | D, A> = pipe(
+const v1: Either<E1 | E2, A> = pipe(
     value(true),
-    E.apFirstW(
+    apFirstW(
         anotherValue(true)
     )
 ) // { _tag: 'Right', right: 123 }
 
-const v2: E.Either<B | D, A> = pipe(
+const v2: Either<E1 | E2, A> = pipe(
     value(false),
-    E.apFirstW(
+    apFirstW(
         anotherValue(true)
     )
 ) // { _tag: 'Left', left: 'error' }
 
-const v3: E.Either<B | D, A> = pipe(
+const v3: Either<E1 | E2, A> = pipe(
     value(true),
-    E.apFirstW(
+    apFirstW(
         anotherValue(false)
     )
 ) // { _tag: 'Left', left: 'exception' }
 
-const v4: E.Either<B | D, A> = pipe(
+const v4: Either<E1 | E2, A> = pipe(
     value(false),
-    E.apFirstW(
+    apFirstW(
         anotherValue(false)
     )
 ) // { _tag: 'Left', left: 'error' }
 ```
+
 </details>
 
 ---
 
 ## `apSecond`
+
+<!-- ## `apSecond` -->
 
 Combine two effectful actions, keeping only the result of the second.
 
@@ -392,49 +406,49 @@ flowchart LR
 <summary>Code Example</summary>
 
 ```ts
-import * as E from "fp-ts/lib/Either"
+import { Either, left, right, apSecond } from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
 type A = number
 type B = "error"
 type C = string
 
-function value(toggle: boolean): E.Either<B, A> {
+function value(toggle: boolean): Either<B, A> {
     return toggle
-        ? E.right(123)
-        : E.left("error")
+        ? right(123)
+        : left("error")
 }
 
-function anotherValue(toggle: boolean): E.Either<B, C> {
+function anotherValue(toggle: boolean): Either<B, C> {
     return toggle
-        ? E.right("abc")
-        : E.left("error")
+        ? right("abc")
+        : left("error")
 }
 
-const v1: E.Either<B, C> = pipe(
+const v1: Either<B, C> = pipe(
     value(true),
-    E.apSecond(
+    apSecond(
         anotherValue(true)
     )
 ) // { _tag: 'Right', right: 'abc' }
 
-const v2: E.Either<B, C> = pipe(
+const v2: Either<B, C> = pipe(
     value(false),
-    E.apSecond(
+    apSecond(
         anotherValue(true)
     )
 ) // { _tag: 'Left', left: 'error' }
 
-const v3: E.Either<B, C> = pipe(
+const v3: Either<B, C> = pipe(
     value(true),
-    E.apSecond(
+    apSecond(
         anotherValue(false)
     )
 ) // { _tag: 'Left', left: 'error' }
 
-const v4: E.Either<B, C> = pipe(
+const v4: Either<B, C> = pipe(
     value(false),
-    E.apSecond(
+    apSecond(
         anotherValue(false)
     )
 ) // { _tag: 'Left', left: 'error' }
@@ -444,6 +458,8 @@ const v4: E.Either<B, C> = pipe(
 ---
 
 ## `apSecondW`
+
+<!-- ## `apSecondW` -->
 
 Less strict version of (`apSecond`)[#apSecond].
 
@@ -476,54 +492,55 @@ flowchart LR
 <summary>Code Example</summary>
 
 ```ts
-import * as E from "fp-ts/lib/Either"
+import { Either, left, right, apSecondW } from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
 type A = number
-type B = "error"
-type C = string
-type D = "exception"
+type B = string
+type E1 = "error"
+type E2 = "exception"
 
-function value(toggle: boolean): E.Either<B | D, A> {
+function value(toggle: boolean): Either<E1 | E2, A> {
     return toggle
-        ? E.right(123)
-        : E.left("error")
+        ? right(123)
+        : left("error")
 }
 
-function anotherValue(toggle: boolean): E.Either<D, C> {
+function anotherValue(toggle: boolean): Either<E2, B> {
     return toggle
-        ? E.right("abc")
-        : E.left("exception")
+        ? right("abc")
+        : left("exception")
 }
 
-const v1: E.Either<B | D, C> = pipe(
+const v1: Either<E1 | E2, B> = pipe(
     value(true),
-    E.apSecondW(
+    apSecondW(
         anotherValue(true)
     )
 ) // { _tag: 'Right', right: 'abc' }
 
-const v2: E.Either<B | D, C> = pipe(
+const v2: Either<E1 | E2, B> = pipe(
     value(false),
-    E.apSecondW(
+    apSecondW(
         anotherValue(true)
     )
 ) // { _tag: 'Left', left: 'error' }
 
-const v3: E.Either<B | D, C> = pipe(
+const v3: Either<E1 | E2, B> = pipe(
     value(true),
-    E.apSecondW(
+    apSecondW(
         anotherValue(false)
     )
 ) // { _tag: 'Left', left: 'exception' }
 
-const v4: E.Either<B | D, C> = pipe(
+const v4: Either<E1 | E2, B> = pipe(
     value(false),
-    E.apSecondW(
+    apSecondW(
         anotherValue(false)
     )
 ) // { _tag: 'Left', left: 'error' }
 ```
+
 </details>
 
 ---
@@ -533,6 +550,8 @@ Creates `Either` from value.
 
 
 ## `fromPredicate`
+
+<!-- ## `fromPredicate` -->
 
 ```mermaid
 flowchart LR
@@ -559,25 +578,28 @@ flowchart LR
 <summary>Code Example</summary>
 
 ```ts
-import * as E from "fp-ts/lib/Either"
+import { Either, fromPredicate } from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
 type A = number
-type B = "error"
+type E1 = "error"
 
-const v: E.Either<B, A> = pipe(
+const v: Either<E1, A> = pipe(
     123,
-    E.fromPredicate(
+    fromPredicate(
         (n): boolean => n > 0,
-        (n): B => "error"
+        (n): E1 => "error"
     )
 )
 ```
+
 </details>
 
 ---
 
 ## `left`
+
+<!-- ## `left` -->
 
 ```mermaid
 flowchart LR
@@ -596,17 +618,20 @@ flowchart LR
 <summary>Code Example</summary>
 
 ```ts
-import * as E from "fp-ts/lib/Either"
+import { Either, left } from "fp-ts/lib/Either"
 
-type B = "error"
+type E1 = "error"
 
-const v: E.Either<B, never> = E.left("error")
+const v: Either<E1, never> = left("error")
 ```
+
 </details>
 
 ---
 
 ## `right`
+
+<!-- ## `right` -->
 
 ```mermaid
 flowchart LR
@@ -625,17 +650,15 @@ flowchart LR
 <summary>Code Example</summary>
 
 ```ts
-import * as E from "fp-ts/lib/Either"
+import { Either, right } from "fp-ts/lib/Either"
 
 type A = number
 
-const v: E.Either<never, A> = E.right(123)
+const v: Either<never, A> = right(123)
 ```
 </details>
 
-
 ---
-
 
 # destructors
 Gets value from `Either`.
@@ -643,7 +666,9 @@ Gets value from `Either`.
 
 ## `match` / `fold`
 
-Method `match` destruct `Either<B, A>` to `C`.
+<!-- ## `match` / `fold` -->
+
+Method `match` destruct `Either<E1, A>` to `B`.
 
 Type of output value can be different from `Left` and `Right`.
 
@@ -652,13 +677,13 @@ flowchart LR
     style input stroke-width: 2px
     style match stroke-width: 2px
 
-    input( Either<<span>B, A</span>> )
+    input( Either<<span>E1, A</span>> )
     match{ match }
     onLeft([ onLeft ])
     onRight([ onRight ])
-    leftOutput( C )
-    rightOutput( C )
-    output( C )
+    leftOutput( B )
+    rightOutput( B )
+    output( B )
 
     input ---> match
     match --> | left | onLeft
@@ -673,30 +698,30 @@ flowchart LR
 <summary>Code Example</summary>
 
 ```ts
-import * as E from "fp-ts/lib/Either"
+import { Either, left, right, match } from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
 type A = number
-type B = "error"
-type C = string
+type B = string
+type E1 = "error"
 
-function value(toggle: boolean): E.Either<B, A> {
+function value(toggle: boolean): Either<E1, A> {
     return toggle
-        ? E.right(123)
-        : E.left("error")
+        ? right(123)
+        : left("error")
 }
 
-const v1: C = pipe(
+const v1: B = pipe(
     value(true),
-    E.fold(
+    match(
         left => `Left: ${left}`,
         right => `Right: ${right}`,
     )
 ) // "Right 123"
 
-const v2: C = pipe(
+const v2: B = pipe(
     value(false),
-    E.fold(
+    match(
         left => `Left: ${left}`,
         right => `Right: ${right}`,
     )
@@ -706,7 +731,12 @@ const v2: C = pipe(
 
 ---
 
+
+---
+
 ## `matchW` / `foldW`
+
+<!-- ## `matchW` / `foldW` -->
 
 Method `matchW` destruct `Either<B, A>` to `D | C`. Less strict version of [`match`](#match).
 
@@ -768,13 +798,15 @@ const v2: D | C  = pipe(
     )
 ) // null
 ```
+
 </details>
 
 
 ---
 
-
 ## `getOrElse`
+
+<!-- ## `getOrElse` -->
 
 Method `getOrElse` destruct `Either<B, A>` to `A`.
 
@@ -804,37 +836,43 @@ flowchart LR
 <summary>Code Example</summary>
 
 ```ts
-import * as E from "fp-ts/lib/Either"
+import { Either, left, right, getOrElse } from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
 type A = number
-type B = "error"
+type E1 = "error"
 
-function value(toggle: boolean): E.Either<B, A> {
+function value(toggle: boolean): Either<E1, A> {
     return toggle
-        ? E.right(123)
-        : E.left("error")
+        ? right(123)
+        : left("error")
 }
 
 const v1: A = pipe(
     value(true),
-    E.getOrElse(
+    getOrElse(
         (err): A => -1
     ),
 ) // 123
 
 const v2: A = pipe(
     value(false),
-    E.getOrElse(
+    getOrElse(
         (err): A => -1
     )
 ) // -1
 ```
+
 </details>
 
 ---
 
+
+---
+
 ## `getOrElseW`
+
+<!-- ## `getOrElseW` -->
 
 Method `getOrElseW` destruct `Either<B, A>` to `A | C`. Less strict version of [`getOrElse`](#getOrElse).
 
@@ -864,33 +902,32 @@ flowchart LR
 <summary>Code Example</summary>
 
 ```ts
-import * as E from "fp-ts/lib/Either"
+import { Either, left, right, getOrElseW } from "fp-ts/lib/Either"
 import { pipe } from "fp-ts/lib/function"
 
 type A = number
-type B = "error"
-type C = string
+type B = string
+type E1 = "error"
 
-function value(toggle: boolean): E.Either<B, A> {
+function value(toggle: boolean): Either<E1, A> {
     return toggle
-        ? E.right(123)
-        : E.left("error")
+        ? right(123)
+        : left("error")
 }
 
-const v1: C | A = pipe(
+const v1: A | B = pipe(
     value(true),
-    E.getOrElseW(
-        (err): C => `My stirng: ${err}`
+    getOrElseW(
+        (err): B => `My stirng: ${err}`
     ),
 ) // 123
 
-const v2: C | A = pipe(
+const v2: A | B = pipe(
     value(false),
-    E.getOrElseW(
-        (err): C => `My stirng: ${err}`
+    getOrElseW(
+        (err): B => `My stirng: ${err}`
     ),
 ) // "My stirng: error"
 ```
-</details>
 
----
+</details>
