@@ -1,8 +1,5 @@
 <h1><code>Either</code></h1>
 
-- [instance operations](#instance-operations)
-  - [`alt`](#alt)
-  - [`altW`](#altw)
 - [combinators](#combinators)
   - [`apFirst`](#apfirst)
   - [`apFirstW`](#apfirstw)
@@ -17,27 +14,34 @@
   - [`matchW` / `foldW`](#matchw--foldw)
   - [`getOrElse`](#getorelse)
   - [`getOrElseW`](#getorelsew)
+- [instance operations](#instance-operations)
+  - [`alt`](#alt)
+  - [`altW`](#altw)
 
-
-# instance operations
-
-## `alt`
-
-{{./Either/alt/doc.md}}
-
----
-
-## `altW`
-
-{{./Either/altW/doc.md}}
-
----
 
 # combinators
 
 ## `apFirst`
 
 {{./Either/apFirst/doc.md}}
+
+---
+
+## `apFirstW`
+
+{{./Either/apFirstW/doc.md}}
+
+---
+
+## `apSecond`
+
+{{./Either/apSecond/doc.md}}
+
+---
+
+## `apSecondW`
+
+{{./Either/apSecondW/doc.md}}
 
 ---
 
@@ -106,3 +110,18 @@ Gets value from `Either`.
 ## `getOrElseW`
 
 {{./Either/getOrElseW/doc.md}}
+
+---
+
+# instance operations
+
+## `alt`
+
+{{./Either/alt/doc.md}}
+
+---
+
+## `altW`
+
+{{./Either/altW/doc.md}}
+
